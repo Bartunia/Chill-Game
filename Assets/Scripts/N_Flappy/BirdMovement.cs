@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace N_Flappy
 {
@@ -16,12 +18,14 @@ namespace N_Flappy
         public float gravity = -9.8f;
         public float strength = 5f;
 
-        private bool isAlive = true;
+        private bool _isAlive = true;
+        [SerializeField] public GameManager gameManager;
 
 
         private void Awake()
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
+       
         }
 
         private void Start()
@@ -53,35 +57,17 @@ namespace N_Flappy
         }
 
 
-        /*void Update()
-    {
-        if (!isAlive) return;
-
-        if (FlapPressed())
+        [Obsolete("Obsolete")]
+        private void OnTriggerEnter2D(Collider2D other)
         {
-            // Wyzeruj pionową składową, żeby każdy flap był „równy”
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
-            rb.AddForce(Vector2.up * flapForce, ForceMode2D.Impulse);
-        }
-
-        // Ogranicz prędkość spadania
-        if (rb.linearVelocity.y < maxFallSpeed)
-        {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, maxFallSpeed);
-        }
-
-        // Obrót zależny od prędkości Y
-        float t = Mathf.InverseLerp(maxFallSpeed, 6f, rb.linearVelocity.y);
-        float targetZ = Mathf.Lerp(tiltDownAngle, tiltUpAngle, t);
-        Quaternion targetRot = Quaternion.Euler(0f, 0f, targetZ);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, tiltSmooth * Time.deltaTime);
-    }*/
-
-        void OnCollisionEnter2D(Collision2D other)
-        {
-            if (!isAlive) return;
-            isAlive = false;
-            // obsługa śmierci / pauza / event do GameManagera
+            if (other.gameObject.CompareTag("Obstacle"))
+            {
+                gameManager.GameOver();
+            }
+            else if (other.gameObject.CompareTag("Scoring"))
+            {
+                gameManager.IncreaseScore();
+            }
         }
 
         private bool FlapPressed()
