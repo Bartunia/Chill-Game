@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class Player : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
     public Sprite[] sprites;
@@ -13,6 +13,14 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    private void OnEnable()
+    {
+        Vector3 position = transform.position;
+        position.y = 0;
+        transform.position = position;
+        direction = Vector3.zero;
     }
 
     private void Start()
@@ -34,14 +42,24 @@ public class PlayerMovement : MonoBehaviour
     private void AnimateSprite()
     {
         spriteIndex++;
-            Debug.Log("nigga++");
 
         if (spriteIndex >= sprites.Length)
         {
             spriteIndex = 0;
-            Debug.Log("nigga");
         }
 
         spriteRenderer.sprite = sprites[spriteIndex];
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "Obstacle")
+        {
+            FindObjectOfType<GameManager>().GameOver();
+        }
+        if (other.gameObject.tag == "Scoring")
+        {
+            FindObjectOfType<GameManager>().IncreaseScore();
+        }
     }
 }
