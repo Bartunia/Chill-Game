@@ -32,7 +32,16 @@ namespace N_Flappy
         {
             InvokeRepeating(nameof(AnimateSprite), 0.15f, 0.15f);
         }
-    
+
+        private void OnEnable()
+        {
+            var transform1 = transform;
+            Vector3 position = transform1.position;
+            position.y = 0f;
+            transform1.position = position;
+            _direction = Vector3.zero;
+        }
+
         private void Update()
         {
             if (FlapPressed())
